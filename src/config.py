@@ -11,6 +11,9 @@ RAW_DATA_PATH = PROJECT_ROOT / "data" / "raw" / "Tweets.csv"
 
 FIGURES_DIR = PROJECT_ROOT / "reports" / "figures"
 
+# Trained weights, kept out of version control
+CHECKPOINT_DIR = PROJECT_ROOT / "checkpoints"
+
 # Single random seed for reproducibility
 RANDOM_SEED = 42
 
