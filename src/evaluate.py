@@ -3,7 +3,7 @@
 import matplotlib.pyplot as plt
 import numpy as np
 import torch
-from sklearn.metrics import accuracy_score, classification_report, confusion_matrix
+from sklearn.metrics import accuracy_score, classification_report, confusion_matrix, f1_score
 
 from src.config import FIGURES_DIR
 
@@ -32,8 +32,8 @@ def plot_loss_curves(train_losses, val_losses, model_name="model"):
     _save_and_show(fig, f"loss_curve_{model_name}.png")
 
 
-def evaluate_model(model, loader, class_names, device="cpu"):
-    """Run the model over a loader and report accuracy, precision, recall and F1."""
+def _predict(model, loader, device="cpu"):
+    """Return the true and predicted labels for every sample in a loader."""
     model.eval()  # Dropout off, batch norm uses its stored statistics
     all_preds, all_labels = [], []
 
@@ -46,10 +46,21 @@ def evaluate_model(model, loader, class_names, device="cpu"):
 
     y_pred = np.concatenate(all_preds)  
     y_true = np.concatenate(all_labels)
+    return y_true, y_pred
 
+
+def evaluate_model(model, loader, class_names, device="cpu"):
+    """Print accuracy and the per-class precision, recall and F1."""
+    y_true, y_pred = _predict(model, loader, device)
     print(f"Accuracy: {accuracy_score(y_true, y_pred):.4f}\n")
     print(classification_report(y_true, y_pred, target_names=class_names, digits=4))
     return y_true, y_pred
+
+
+def compute_metrics(model, loader, device="cpu"):
+    """Return accuracy and macro F1 as plain numbers, for comparison tables."""
+    y_true, y_pred = _predict(model, loader, device)
+    return accuracy_score(y_true, y_pred), f1_score(y_true, y_pred, average="macro")
 
 
 def plot_confusion_matrix(y_true, y_pred, class_names, model_name="model"):
