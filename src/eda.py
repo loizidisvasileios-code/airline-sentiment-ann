@@ -25,10 +25,10 @@ NOISE_PATTERNS = {
 
 def _save_and_show(fig, filename):
     """Save a figure into reports/figures and display it."""
-    FIGURES_DIR.mkdir(parents=True, exist_ok=True)  # Create the folder on first use
-    fig.savefig(FIGURES_DIR / filename, dpi=150, bbox_inches="tight")  # bbox_inches trims white space
-    plt.show()  # Render it in the notebook
-    plt.close(fig)  # Release the memory the figure holds
+    FIGURES_DIR.mkdir(parents=True, exist_ok=True) 
+    fig.savefig(FIGURES_DIR / filename, dpi=150, bbox_inches="tight")  
+    plt.show()
+    plt.close(fig)  
 
 
 def _corpus_tokens(df, column):
@@ -57,12 +57,12 @@ def plot_class_distribution(df):
     counts = df[LABEL_COL].value_counts()  
     fig, ax = plt.subplots(figsize=(6, 4)) 
     ax.bar(counts.index, counts.values, color="steelblue")
-    for position, value in enumerate(counts.values):  # Annotate each bar with count and share
+    for position, value in enumerate(counts.values):  
         ax.text(position, value, f"{value}\n{value / len(df) * 100:.1f}%", ha="center", va="bottom")
     ax.set_title("Sentiment class distribution")
     ax.set_xlabel("Sentiment")
     ax.set_ylabel("Number of tweets")
-    ax.set_ylim(0, counts.max() * 1.15)  # Headroom so the labels are not clipped
+    ax.set_ylim(0, counts.max() * 1.15)  
     _save_and_show(fig, "class_distribution.png")
 
 
@@ -71,10 +71,10 @@ def plot_tweet_lengths(df, column=TEXT_COL):
     lengths = df[column].apply(lambda text: len(word_tokenize(text)))  # Token count per tweet
     fig, ax = plt.subplots(figsize=(7, 4))
     ax.hist(lengths, bins=30, color="steelblue", edgecolor="black")
-    ax.set_title("Distribution of tweet length")
+    ax.set_title(f"Distribution of tweet length ({column})")
     ax.set_xlabel("Tokens per tweet")
     ax.set_ylabel("Number of tweets")
-    _save_and_show(fig, "tweet_lengths.png")
+    _save_and_show(fig, f"tweet_lengths_{column}.png")
     print(f"Mean {lengths.mean():.1f} | Median {lengths.median():.0f} | Min {lengths.min()} | Max {lengths.max()}")
 
 
@@ -83,13 +83,13 @@ def plot_top_words(df, column=TEXT_COL, n=10, exclude_common=True):
     """
     tokens = _corpus_tokens(df, column)
     if exclude_common:
-        tokens = [t for t in tokens if t.isalpha() and t not in STOPWORDS]  # isalpha() drops punctuation
-    words, counts = zip(*Counter(tokens).most_common(n))  # Unzip the (word, count) pairs
+        tokens = [t for t in tokens if t.isalpha() and t not in STOPWORDS]  
+    words, counts = zip(*Counter(tokens).most_common(n))  
     fig, ax = plt.subplots(figsize=(7, 4))
     ax.barh(words[::-1], counts[::-1], color="steelblue")  # Reversed so the largest sits on top
-    ax.set_title(f"Top {n} most frequent words")
+    ax.set_title(f"Top {n} most frequent words ({column})")
     ax.set_xlabel("Frequency")
-    _save_and_show(fig, "top_words.png")
+    _save_and_show(fig, f"top_words_{column}.png")
 
 
 def plot_wordcloud(df, column=TEXT_COL):
@@ -99,5 +99,5 @@ def plot_wordcloud(df, column=TEXT_COL):
     fig, ax = plt.subplots(figsize=(10, 5))
     ax.imshow(cloud, interpolation="bilinear")  
     ax.axis("off")  
-    ax.set_title("Word cloud of the raw tweets")
-    _save_and_show(fig, "wordcloud.png")
+    ax.set_title(f"Word cloud of {column}")
+    _save_and_show(fig, f"wordcloud_{column}.png")
