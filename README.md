@@ -21,7 +21,7 @@ Because of this, macro-averaged F1 is the primary evaluation metric, reported al
 Four configurations were trained: two text representations (tf-idf and word2vec), each with and without class weighting.
 The final model was selected on validation macro F1
 
-- **TF-IDF, no class weights (selected):** validation macro F1 0.7484, test accuracy 78.2%,
+- TF-IDF, no class weights (selected): validation macro F1 0.7484, test accuracy 78.2%,
   test macro F1 0.7195
 - TF-IDF with class weights: validation macro F1 0.7270, test accuracy 73.3%, test macro F1 0.6868
 - Word2Vec, no class weights: validation macro F1 0.7214, test accuracy 76.3%, test macro F1 0.6740
@@ -49,7 +49,7 @@ The final model was selected on validation macro F1
 
 ## Project structure
 
-- `data/raw/Tweets.csv` — the original dataset, never modified
+- `data/raw/Tweets.csv` — the original dataset
 - `src/config.py` — paths, random seed and column names
 - `src/data_loader.py` — loading and initial quality checks
 - `src/eda.py` — noise statistics, vocabulary statistics and plots
